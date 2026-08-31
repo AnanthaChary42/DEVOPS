@@ -3,6 +3,9 @@ name: Deploy Portfolio to GitHub Pages
 on:
   push:
     branches: ["main"]
+    paths:
+      - '00-Portfolio/**'
+      - '.github/workflows/deploy-portfolio.yml'
 
   workflow_dispatch:
 
@@ -32,6 +35,19 @@ jobs:
         run: |
           mkdir -p _site/lab0-Portfolio
           cp -r ./00-Portfolio/* _site/lab0-Portfolio/
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0; url=lab0-Portfolio/">
+            <title>Redirecting to Portfolio...</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="lab0-Portfolio/">Portfolio</a>...</p>
+          </body>
+          </html>
+          EOF
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
