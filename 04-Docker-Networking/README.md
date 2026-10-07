@@ -71,7 +71,7 @@ docker network ls
 ```powershell
 docker network inspect my-bridge-net
 ```
-* **Status:** Network details shown — subnet `172.18.0.0/16`, gateway `172.18.0.1`, empty `Containers` field (no containers connected yet).
+* **Status:** Network details shown — subnet `172.19.0.0/16`, gateway `172.19.0.1`, empty `Containers` field (no containers connected yet).
 
 ### 4. Create the Flask Application
 ```python
@@ -95,6 +95,7 @@ if __name__ == '__main__':
 **Dependencies (`requirements.txt`):**
 ```
 Flask==2.0.1
+Werkzeug<3.0
 ```
 
 ### 5. Create the Dockerfile
@@ -135,7 +136,7 @@ docker run -d --name flask --net=my-bridge-net -p 5001:5001 flask-api
 ```powershell
 docker ps
 ```
-* **Status:** All 3 containers (`flask`, `mysql`, `redis`) running on `my-bridge-net`.
+* **Status:** All 3 containers (`flask`, `mysql`, `redis`) running on `my-bridge-net`. The screenshot shows the `docker run` commands pulling MySQL and Redis images, followed by `docker ps` confirming running containers.
 
 ### 8. Test the Flask API
 ```powershell
@@ -149,7 +150,7 @@ curl http://localhost:5001/about
   "version": "1.0"
 }
 ```
-* **Status:** Flask API accessible from host via port-forwarded `localhost:5001`.
+* **Status:** Flask API accessible from host via `localhost:5001`.
 
 ### 9. Test Container-to-Container Connectivity
 ```powershell
@@ -158,20 +159,26 @@ docker exec -it flask bash
 Inside the Flask container:
 ```bash
 # Ping MySQL container by name
-ping mysql -c 3
+ping mysql
 
 # Ping Redis container by name
-ping redis -c 3
+ping redis
 
 exit
 ```
-* **Status:** Both pings successful — Docker DNS resolves container names (`mysql`, `redis`) to their internal IP addresses on the `my-bridge-net` network.
+* **Status:** Ping to MySQL resolved to `172.19.0.2` (10 packets, 0% loss, avg `0.190 ms`). Ping to Redis resolved to `172.19.0.3` (10 packets, 0% loss, avg `0.184 ms`). Docker DNS successfully resolves container names on the custom bridge network.
 
-### 10. Inspect the Network (With Containers)
+### 10. Cleanup
 ```powershell
-docker network inspect my-bridge-net
+docker stop mysql redis flask
+docker rm mysql redis flask
+docker network rm my-bridge-net
+
+# Verify
+docker ps -a
+docker network ls
 ```
-* **Status:** `Containers` field now shows all three containers with their assigned IP addresses — confirming they are connected to the same bridge network.
+* **Status:** All containers stopped and removed. Network `my-bridge-net` deleted. Verification shows no containers running and `my-bridge-net` no longer listed in networks.
 
 ---
 
@@ -186,32 +193,20 @@ docker network inspect my-bridge-net
 ### Network Inspect (Empty)
 ![Network Inspect](Screenshots/03_network_inspect.png)
 
-### Flask App & Requirements
-![Flask App](Screenshots/04_flask_app.png)
-
-### Dockerfile
-![Dockerfile](Screenshots/05_dockerfile.png)
-
 ### Docker Build
-![Docker Build](Screenshots/06_docker_build.png)
+![Docker Build](Screenshots/04_docker_build.png)
 
-### Containers Running
-![Containers Running](Screenshots/07_containers_running.png)
+### Launch Containers & Docker PS
+![Containers Running](Screenshots/05_containers_running.png)
 
-### Flask API Response
-![Flask Response](Screenshots/08_flask_response.png)
+### Ping MySQL (Container-to-Container)
+![Ping MySQL](Screenshots/06_ping_mysql.png)
 
-### Ping MySQL
-![Ping MySQL](Screenshots/09_ping_mysql.png)
-
-### Ping Redis
-![Ping Redis](Screenshots/10_ping_redis.png)
-
-### Network Inspect (With Containers)
-![Network Inspect Containers](Screenshots/11_network_inspect_containers.png)
+### Ping Redis (Container-to-Container)
+![Ping Redis](Screenshots/07_ping_redis.png)
 
 ### Cleanup
-![Cleanup](Screenshots/12_cleanup.png)
+![Cleanup](Screenshots/08_cleanup.png)
 
 ---
 
@@ -244,6 +239,8 @@ docker network rm my-bridge-net
 docker ps -a
 docker network ls
 ```
+
+* **Verified:** No containers found in `docker ps -a`, and `my-bridge-net` no longer appears in `docker network ls`.
 
 ---
 
