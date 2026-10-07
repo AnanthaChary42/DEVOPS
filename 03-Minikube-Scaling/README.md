@@ -161,38 +161,26 @@ curl http://localhost:8080/health
 ### Minikube Start & Nodes
 ![Minikube Start](Screenshots/01_minikube_start.png)
 
-### Flask App Code
-![Flask App](Screenshots/02_flask_app.png)
-
-### Dockerfile
-![Dockerfile](Screenshots/03_dockerfile.png)
-
 ### Docker Build
-![Docker Build](Screenshots/04_docker_build.png)
-
-### ReplicaSet YAML
-![ReplicaSet YAML](Screenshots/05_replicaset_yaml.png)
+![Docker Build](Screenshots/02_docker_build.png)
 
 ### Apply ReplicaSet
-![Apply ReplicaSet](Screenshots/06_apply_replicaset.png)
+![Apply ReplicaSet](Screenshots/03_apply_replicaset.png)
 
 ### Pods Running (3 Replicas)
-![Pods 3 Replicas](Screenshots/07_get_pods_3.png)
+![Pods 3 Replicas](Screenshots/04_get_pods_3.png)
 
 ### Scale Up to 5 Replicas
-![Scale Up](Screenshots/08_scale_up.png)
-
-### Pods Running (5 Replicas)
-![Pods 5 Replicas](Screenshots/09_get_pods_5.png)
+![Scale Up](Screenshots/05_scale_up.png)
 
 ### Self-Healing — Pod Auto-Replaced
-![Self Healing](Screenshots/10_self_healing.png)
+![Self Healing](Screenshots/06_self_healing.png)
 
 ### Pod Distribution (Wide View)
-![Pods Wide](Screenshots/11_pods_wide.png)
+![Pods Wide](Screenshots/07_pods_wide.png)
 
 ### Flask App Response
-![Flask Response](Screenshots/12_flask_response.png)
+![Flask Response](Screenshots/08_flask_response.png)
 
 ---
 
