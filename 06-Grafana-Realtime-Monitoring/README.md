@@ -565,19 +565,3 @@ docker ps -a
 ```
 
 ---
-
-## Troubleshooting
-
-| Problem                                            | Solution                                                                                                     |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------- |
-| `pip3 install` → `externally-managed-environment`  | `pip3 install prometheus-client --break-system-packages`, or use a venv                                      |
-| Prometheus target DOWN                             | Script still running? Target host right — `172.17.0.1` on Linux/WSL, `host.docker.internal` on Windows/macOS |
-| `--network=host` not working on Windows            | Use `-p 9090:9090` and set the target to `host.docker.internal:8000`                                         |
-| Grafana can't reach Prometheus                     | Data source URL `http://172.17.0.1:9090` (or `host.docker.internal`), not `localhost`                        |
-| Dashboard shows "No data"                          | Save & Test the data source; check the metric name spelling                                                  |
-| Jenkins stage: `docker: not found`                 | Install the CLI in the container and mount the socket — see Step 14b                                         |
-| Jenkins stage: `permission denied ... docker.sock` | `chmod 666 /var/run/docker.sock` inside the container (lab-only shortcut)                                    |
-| Pipeline fails: container name already in use      | The `Clean Previous Run` stage handles it; otherwise `docker rm -f prometheus grafana delivery_metrics`      |
-| Port 8000/9090/3000 in use                         | `ss -ltnp                                                                                                    | grep <port>` and stop the holder |
-
----
