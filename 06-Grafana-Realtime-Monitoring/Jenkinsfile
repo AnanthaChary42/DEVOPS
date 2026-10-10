@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+    environment { PROJECT_DIR = "/home/anantha/06-Grafana-Realtime-Monitoring" }
+    stages {
+        stage('Pre-check Docker') {
+            steps {
+                script {
+                    def dockerVersion = sh(script: 'docker --version', returnStdout: true).trim()
+                    if (!dockerVersion) {
+                        error "Docker is not installed or not in the PATH. Please install Docker."
+                    }
+                    def dockerInfo = sh(script: 'docker info', returnStatus: true)
+                    if (dockerInfo != 0) {
+                        error "Docker daemon is not running. Please start the Docker service."
+                    }
+                    echo "Docker is available and running: ${dockerVersion}"
+                }
+            }
+        }
+        stage('Setup Workspace') {
+            steps {
+                sh '''
+                ls -l ${PROJECT_DIR}/delivery_metrics.py \
+                      ${PROJECT_DIR}/prometheus.yml \
+                      ${PROJECT_DIR}/alert_rules.yml \
+                      ${PROJECT_DIR}/Dockerfile
+                '''
+            }
+        }
+        stage('Clean Previous Run') {
+            steps {
+                sh '''
+                docker rm -f delivery_metrics prometheus grafana 2>/dev/null || true
+                '''
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t delivery_metrics ${PROJECT_DIR}'
+            }
+        }
+        stage('Run Application') {
+            steps {
+                sh 'docker run -d -p 8000:8000 --name delivery_metrics delivery_metrics'
+            }
+        }
+        stage('Run Prometheus & Grafana') {
+            steps {
+                sh '''
+                docker run -d --name prometheus -p 9090:9090 \
+                  -v ${PROJECT_DIR}/prometheus.yml:/etc/prometheus/prometheus.yml \
+                  -v ${PROJECT_DIR}/alert_rules.yml:/etc/prometheus/alert_rules.yml \
+                  prom/prometheus
+                docker run -d --name grafana -p 3000:3000 grafana/grafana
+                '''
+            }
+        }
+    }
+    post {
+        success { echo 'Monitoring stack deployed successfully!' }
+        failure { echo 'Pipeline failed. Check the logs for details.' }
+    }
+}
