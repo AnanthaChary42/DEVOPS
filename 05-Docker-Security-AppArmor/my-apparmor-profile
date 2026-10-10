@@ -1,6 +1,6 @@
 #include <tunables/global>
 
-/usr/bin/python3 {
+profile my-apparmor-profile flags=(attach_disconnected) {
     # Deny access to sensitive system files
     deny /etc/** r,
     deny /var/** rw,
@@ -12,8 +12,8 @@
     /app/** rwk,
 
     # Deny execution of any binaries in /bin or /usr/bin
-    deny /bin/** rmix,
-    deny /usr/bin/** rmix,
+    deny /bin/** rmx,
+    deny /usr/bin/** rmx,
 
     # Capability restrictions
     capability net_bind_service,

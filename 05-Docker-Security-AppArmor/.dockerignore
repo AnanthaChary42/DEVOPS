@@ -1,0 +1,7 @@
+Screenshots/
+README.md
+my-apparmor-profile*
+apply_apparmor.py
+test_restricted_actions.py
+.dockerignore
+.venv/

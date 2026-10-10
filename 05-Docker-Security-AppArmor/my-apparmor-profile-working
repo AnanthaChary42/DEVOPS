@@ -1,0 +1,31 @@
+#include <tunables/global>
+
+profile my-apparmor-profile flags=(attach_disconnected) {
+    #include <abstractions/base>
+
+    # Runtime (must be allowed or the container won't boot)
+    /usr/local/bin/python3.8 ix,
+    /usr/local/bin/python    ix,
+    /usr/local/** rm,
+    /lib/** rm,
+    /usr/lib/** rm,
+    /tmp/** rw,
+
+    # Application
+    /app/** rwk,
+
+    # Networking
+    network inet stream,
+    network inet6 stream,
+    capability net_bind_service,
+
+    # Restrictions
+    deny /etc/passwd r,
+    deny /etc/shadow r,
+    deny /etc/group r,
+    deny /etc/gshadow r,
+    deny /var/** rw,
+    deny /bin/** rmx,
+    deny /usr/bin/** rmx,
+    deny capability sys_admin,
+}
