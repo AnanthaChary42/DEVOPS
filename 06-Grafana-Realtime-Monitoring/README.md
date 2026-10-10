@@ -7,26 +7,26 @@ USN: 1BM23IS025
 
 As a DevOps engineer at **ZAPPTTO** (a quick commerce delivery service), build a real-time monitoring pipeline that simulates delivery metrics, visualizes them on dashboards, and sets up automated alerts to ensure smooth operations and quick problem detection.
 
-| Component | Tool | Purpose |
-|-----------|------|---------|
-| **Metrics Simulator** | Python + `prometheus-client` | Simulates delivery metrics |
-| **Metrics Scraper** | Prometheus | Scrapes and stores the metrics |
-| **Visualization** | Grafana | Dashboards with real-time graphs |
-| **Alerting** | Prometheus alert rules | Fires on high pending deliveries / high avg time |
-| **Automation** | Jenkins | Pipeline that builds and launches the whole stack |
+| Component             | Tool                         | Purpose                                           |
+| --------------------- | ---------------------------- | ------------------------------------------------- |
+| **Metrics Simulator** | Python + `prometheus-client` | Simulates delivery metrics                        |
+| **Metrics Scraper**   | Prometheus                   | Scrapes and stores the metrics                    |
+| **Visualization**     | Grafana                      | Dashboards with real-time graphs                  |
+| **Alerting**          | Prometheus alert rules       | Fires on high pending deliveries / high avg time  |
+| **Automation**        | Jenkins                      | Pipeline that builds and launches the whole stack |
 
 ---
 
 ## Prerequisites
 
-| Tool | Purpose |
-|------|---------|
+| Tool                                            | Purpose                             |
+| ----------------------------------------------- | ----------------------------------- |
 | **Docker** (Engine in WSL 2, or Docker Desktop) | Containerizing and running services |
-| **Python 3.10+** | Metrics simulation script |
-| **pip** | To install `prometheus-client` |
-| **Jenkins** | Pipeline automation (Step 14) |
-| **Prometheus** | Metrics scraping |
-| **Grafana** | Visualization |
+| **Python 3.10+**                                | Metrics simulation script           |
+| **pip**                                         | To install `prometheus-client`      |
+| **Jenkins**                                     | Pipeline automation (Step 14)       |
+| **Prometheus**                                  | Metrics scraping                    |
+| **Grafana**                                     | Visualization                       |
 
 > **Note:** `--network=host` only behaves as documented on **Linux / WSL 2**. On Docker Desktop for Windows it is a no-op — use the `-p 9090:9090` + `host.docker.internal` variant (see Troubleshooting).
 
@@ -42,21 +42,21 @@ Grafana is an open-source platform for monitoring and observability. It provides
 
 **Why use them together?**
 
-| Aspect | Prometheus | Grafana |
-|--------|-----------|---------|
-| Data Collection | ✅ Scrapes `/metrics` endpoints | ❌ Does not collect data |
-| Querying | ✅ PromQL for ad-hoc queries | ✅ Uses PromQL via data source |
-| Alerting | ✅ Alert rules with firing states | ✅ Alert notifications (email, Slack) |
-| Visualization | ⚠️ Basic graph tab | ✅ Rich dashboards, panels, themes |
+| Aspect          | Prometheus                        | Grafana                               |
+| --------------- | --------------------------------- | ------------------------------------- |
+| Data Collection | ✅ Scrapes `/metrics` endpoints   | ❌ Does not collect data              |
+| Querying        | ✅ PromQL for ad-hoc queries      | ✅ Uses PromQL via data source        |
+| Alerting        | ✅ Alert rules with firing states | ✅ Alert notifications (email, Slack) |
+| Visualization   | ⚠️ Basic graph tab                | ✅ Rich dashboards, panels, themes    |
 
 **Metric Types:**
 
-| Type | Description | Example |
-|------|-------------|---------|
-| **Counter** | Monotonically increasing value | Total requests served |
-| **Gauge** | Value that goes up and down | Current pending deliveries |
-| **Histogram** | Bucketed distribution | Request duration buckets |
-| **Summary** | Quantiles (percentiles) | Average delivery time |
+| Type          | Description                    | Example                    |
+| ------------- | ------------------------------ | -------------------------- |
+| **Counter**   | Monotonically increasing value | Total requests served      |
+| **Gauge**     | Value that goes up and down    | Current pending deliveries |
+| **Histogram** | Bucketed distribution          | Request duration buckets   |
+| **Summary**   | Quantiles (percentiles)        | Average delivery time      |
 
 ---
 
@@ -165,6 +165,7 @@ if __name__ == "__main__":
 ```
 
 > **About `/metrics`:**
+>
 > - The endpoint is created automatically by `prometheus_client` when `start_http_server` runs; default port **8000**
 > - Each metric has a **name**, a **description** and a **type**
 > - Prometheus GETs `http://<host>:8000/metrics` at the default **15s interval**
@@ -216,6 +217,7 @@ rule_files:
 ```
 
 > **Configuration notes:**
+>
 > - `scrape_configs` defines scraping jobs — each `job_name` is a target group
 > - `targets` specifies host endpoints Prometheus will scrape
 > - **Linux / WSL** → use `172.17.0.1` (the `docker0` bridge gateway, confirm with `ip addr show docker0`)
@@ -273,21 +275,21 @@ Open `http://localhost:9090`.
 
 Prometheus UI → **Status → Targets**.
 
-| Job | Target | State |
-|-----|--------|-------|
-| `prometheus` | `localhost:9090` | UP |
-| `delivery_service` | `172.17.0.1:8000` | UP |
+| Job                | Target            | State |
+| ------------------ | ----------------- | ----- |
+| `prometheus`       | `localhost:9090`  | UP    |
+| `delivery_service` | `172.17.0.1:8000` | UP    |
 
 > If `delivery_service` is **DOWN**: the Python script must still be running, and the target host must be correct (`host.docker.internal:8000` on Windows/macOS).
 
 ### 9. Test Prometheus Queries
 
-| Query | Shows |
-|-------|-------|
-| `total_deliveries` | Total deliveries gauge |
-| `pending_deliveries` | Pending deliveries |
-| `on_the_way_deliveries` | On-the-way deliveries |
-| `average_delivery_time_sum / average_delivery_time_count` | Average delivery time |
+| Query                                                     | Shows                  |
+| --------------------------------------------------------- | ---------------------- |
+| `total_deliveries`                                        | Total deliveries gauge |
+| `pending_deliveries`                                      | Pending deliveries     |
+| `on_the_way_deliveries`                                   | On-the-way deliveries  |
+| `average_delivery_time_sum / average_delivery_time_count` | Average delivery time  |
 
 Execute → **Graph** tab.
 
@@ -312,12 +314,12 @@ Open `http://localhost:3000` — **admin / admin**, then **Skip** the password c
 
 **Home → Dashboards → New Dashboard → Add visualization**, create 4 panels:
 
-| Panel | Query | Visualization |
-|-------|-------|---------------|
-| Total Deliveries | `total_deliveries` | Stat or Gauge |
-| Pending Deliveries | `pending_deliveries` | Time Series |
-| On-the-Way Deliveries | `on_the_way_deliveries` | Time Series |
-| Avg Delivery Time | `average_delivery_time_sum / average_delivery_time_count` | Time Series |
+| Panel                 | Query                                                     | Visualization |
+| --------------------- | --------------------------------------------------------- | ------------- |
+| Total Deliveries      | `total_deliveries`                                        | Stat or Gauge |
+| Pending Deliveries    | `pending_deliveries`                                      | Time Series   |
+| On-the-Way Deliveries | `on_the_way_deliveries`                                   | Time Series   |
+| Avg Delivery Time     | `average_delivery_time_sum / average_delivery_time_count` | Time Series   |
 
 Save as **"Delivery Monitoring"**.
 
@@ -538,15 +540,15 @@ Wait ~15–30s (the rule's `for: 15s`), then check `http://localhost:9090/alerts
 
 ## Verification Summary
 
-| Item | Expected Value |
-|------|---------------|
-| **Python Metrics Server** | Running on port `8000`, serving `/metrics` |
-| **Prometheus** | Running on `9090`, both targets UP |
-| **Grafana** | Running on `3000`, dashboard with 4 panels |
-| **Alert: HighPendingDeliveries** | FIRING |
-| **Alert: HighAverageDeliveryTime** | FIRING / PENDING |
-| **Jenkins Pipeline** | All stages green; Console Output shows the Docker commands |
-| **Alert Simulation** | `pending` 50–100 → alert firing, visible spike in Grafana |
+| Item                               | Expected Value                                             |
+| ---------------------------------- | ---------------------------------------------------------- |
+| **Python Metrics Server**          | Running on port `8000`, serving `/metrics`                 |
+| **Prometheus**                     | Running on `9090`, both targets UP                         |
+| **Grafana**                        | Running on `3000`, dashboard with 4 panels                 |
+| **Alert: HighPendingDeliveries**   | FIRING                                                     |
+| **Alert: HighAverageDeliveryTime** | FIRING / PENDING                                           |
+| **Jenkins Pipeline**               | All stages green; Console Output shows the Docker commands |
+| **Alert Simulation**               | `pending` 50–100 → alert firing, visible spike in Grafana  |
 
 ---
 
@@ -566,42 +568,16 @@ docker ps -a
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| `pip3 install` → `externally-managed-environment` | `pip3 install prometheus-client --break-system-packages`, or use a venv |
-| Prometheus target DOWN | Script still running? Target host right — `172.17.0.1` on Linux/WSL, `host.docker.internal` on Windows/macOS |
-| `--network=host` not working on Windows | Use `-p 9090:9090` and set the target to `host.docker.internal:8000` |
-| Grafana can't reach Prometheus | Data source URL `http://172.17.0.1:9090` (or `host.docker.internal`), not `localhost` |
-| Dashboard shows "No data" | Save & Test the data source; check the metric name spelling |
-| Jenkins stage: `docker: not found` | Install the CLI in the container and mount the socket — see Step 14b |
-| Jenkins stage: `permission denied ... docker.sock` | `chmod 666 /var/run/docker.sock` inside the container (lab-only shortcut) |
-| Pipeline fails: container name already in use | The `Clean Previous Run` stage handles it; otherwise `docker rm -f prometheus grafana delivery_metrics` |
-| Port 8000/9090/3000 in use | `ss -ltnp | grep <port>` and stop the holder |
+| Problem                                            | Solution                                                                                                     |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------- |
+| `pip3 install` → `externally-managed-environment`  | `pip3 install prometheus-client --break-system-packages`, or use a venv                                      |
+| Prometheus target DOWN                             | Script still running? Target host right — `172.17.0.1` on Linux/WSL, `host.docker.internal` on Windows/macOS |
+| `--network=host` not working on Windows            | Use `-p 9090:9090` and set the target to `host.docker.internal:8000`                                         |
+| Grafana can't reach Prometheus                     | Data source URL `http://172.17.0.1:9090` (or `host.docker.internal`), not `localhost`                        |
+| Dashboard shows "No data"                          | Save & Test the data source; check the metric name spelling                                                  |
+| Jenkins stage: `docker: not found`                 | Install the CLI in the container and mount the socket — see Step 14b                                         |
+| Jenkins stage: `permission denied ... docker.sock` | `chmod 666 /var/run/docker.sock` inside the container (lab-only shortcut)                                    |
+| Pipeline fails: container name already in use      | The `Clean Previous Run` stage handles it; otherwise `docker rm -f prometheus grafana delivery_metrics`      |
+| Port 8000/9090/3000 in use                         | `ss -ltnp                                                                                                    | grep <port>` and stop the holder |
 
 ---
-
-## Viva Questions & Answers
-
-1. **What is Prometheus and why is it used in DevOps?**
-   Prometheus is an open-source monitoring and alerting toolkit designed for reliability. It collects time-series metrics by scraping HTTP endpoints (`/metrics`), stores them locally, and supports powerful queries via PromQL. In DevOps, it provides real-time visibility into application and infrastructure health.
-
-2. **What is Grafana and how does it complement Prometheus?**
-   Grafana is an open-source visualization and analytics platform. While Prometheus excels at data collection, storage, and alerting, Grafana provides rich, customizable dashboards for visualizing the metrics data. Together they form a complete monitoring and observability stack.
-
-3. **Explain the different types of Prometheus metrics.**
-   - **Counter**: Monotonically increasing value (e.g., total requests). Only goes up or resets to zero.
-   - **Gauge**: Value that can go up and down (e.g., current pending deliveries, temperature).
-   - **Histogram**: Distributes observations into configurable buckets (e.g., request durations).
-   - **Summary**: Calculates configurable quantiles over a sliding time window (e.g., 95th percentile latency).
-
-4. **What is the purpose of the `/metrics` endpoint?**
-   The `/metrics` endpoint is an HTTP endpoint exposed by applications instrumented with a Prometheus client library. It returns all registered metrics in Prometheus text format. Prometheus periodically scrapes (HTTP GETs) this endpoint to collect metric data.
-
-5. **How does the `--network=host` flag work with Docker containers?**
-   `--network=host` removes network isolation between the container and the host — the container shares the host's network namespace. This means the container uses the host's IP and ports directly, which simplifies accessing host-local services. It only works fully on Linux; on macOS/Windows Docker Desktop, use `host.docker.internal` instead.
-
-6. **What are Prometheus alert rules and how do they work?**
-   Alert rules are YAML definitions that specify conditions using PromQL expressions. When a condition evaluates to true for the duration specified in `for`, the alert transitions from `INACTIVE → PENDING → FIRING`. Alerts can have labels for severity and annotations for human-readable descriptions.
-
-7. **Why is Jenkins used to automate the monitoring pipeline?**
-   Jenkins automates the build-deploy cycle: building the Docker image, running the metrics app, and deploying Prometheus and Grafana containers. This ensures reproducibility, reduces manual errors, and integrates monitoring setup into the CI/CD pipeline.

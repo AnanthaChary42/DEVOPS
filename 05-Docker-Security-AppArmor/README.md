@@ -536,26 +536,3 @@ sudo aa-status | grep my-apparmor-profile
 ```
 
 ---
-
-## Viva Questions & Answers
-
-1. **What is the purpose of using AppArmor with Docker containers?**
-   AppArmor is used to enforce security policies and confine applications to a limited set of resources. With Docker containers, it helps to limit access to system resources, files, and networks, thus providing an additional layer of security.
-
-2. **How do AppArmor profiles help secure a Docker container?**
-   AppArmor profiles define what a containerized application can or cannot do. They restrict access to sensitive directories, network capabilities, file execution, and system calls, ensuring the container behaves securely without affecting the host system.
-
-3. **Why is it important to restrict access to sensitive directories such as `/etc/` and `/var/`?**
-   Sensitive directories like `/etc/` contain configuration files and sensitive information such as user data and system settings. Restricting access prevents the container from reading or modifying important system files, reducing the risk of security breaches.
-
-4. **What other capabilities can you restrict using AppArmor profiles?**
-   AppArmor can restrict a container's ability to access the network, bind to specific ports, execute binaries, write to specific directories, and use system administration capabilities (`cap_sys_admin`).
-
-5. **How can you verify if an AppArmor profile is successfully applied to a Docker container?**
-   Inspect the container with the Docker CLI or SDK — `HostConfig.SecurityOpt` (or `.AppArmorProfile`) shows the applied profile name. Cross-check with `sudo aa-status` on the host, and confirm enforcement by triggering a restricted action and finding the matching `DENIED` entry in the kernel log.
-
-6. **Why must the profile be declared as `profile my-apparmor-profile { ... }`?**
-   Docker resolves `--security-opt apparmor=<name>` by profile name. A path-headed profile is registered under that path, so the lookup fails with "profile not found".
-
-7. **What does `ix` mean in `deny /bin/** rmix`?**
-`i`= inherit-execute (run the target under the current profile),`x`= execute,`r`= read,`m`= memory-map executable. Denying`rmix` blocks reading, mapping and executing those binaries entirely.
