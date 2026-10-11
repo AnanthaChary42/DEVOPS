@@ -149,7 +149,7 @@ Jenkins is an open-source automation server used to build, test, and deploy soft
 
 ### Step 1: Pull and Run the Jenkins Docker Container
 
-```bash
+```powershell
 docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
 ```
 
@@ -173,8 +173,8 @@ d350facb3a26a8282e286a9f63ea585b93372c97222692cb89429a298e39d1d1
 
 Verify the container is running:
 
-```bash
-docker ps -a | grep jenkins
+```powershell
+docker ps -a | Select-String jenkins
 ```
 
 ```
@@ -189,7 +189,7 @@ d350facb3a26   jenkins/jenkins:lts   "/usr/bin/tini -- /u…"   Up 14 minutes   
 
 Enter the container shell:
 
-```bash
+```powershell
 docker exec -it jenkins bash
 ```
 
@@ -208,7 +208,7 @@ fe677853d23642ce9eccc7cf44f3a19d
 
 One-liner alternative (without entering the shell):
 
-```bash
+```powershell
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ```
 
@@ -314,7 +314,7 @@ The Jenkins dashboard shows:
 
 ## Cleanup (after submission)
 
-```bash
+```powershell
 docker stop jenkins
 docker rm jenkins
 
@@ -343,10 +343,10 @@ docker ps -a
 
 ## Quick Reference: Complete Command Sequence
 
-```bash
+```powershell
 # Step 1: run Jenkins
 docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
-docker ps -a | grep jenkins
+docker ps -a | Select-String jenkins
 # 📸 01_jenkins_docker_run.png
 
 # Step 2: initial admin password
