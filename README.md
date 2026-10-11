@@ -18,6 +18,7 @@ DEVOPS/
 ├── 04-Docker-Networking/
 ├── 05-Docker-Security-AppArmor/
 ├── 06-Grafana-Realtime-Monitoring/
+├── 07-Jenkins-CI-Automation/
 └── README.md  ← You are here
 ```
 
@@ -34,6 +35,7 @@ DEVOPS/
 | 04  | [`04-Docker-Networking`](./04-Docker-Networking/)                     | Docker Networking with Multi-Container Application              | `app.py`, `Dockerfile`, `requirements.txt`                                              |
 | 05  | [`05-Docker-Security-AppArmor`](./05-Docker-Security-AppArmor/)       | Docker Security with AppArmor and Python                        | `app.py`, `Dockerfile`, `apply_apparmor.py`, `test_restricted_actions.py`               |
 | 06  | [`06-Grafana-Realtime-Monitoring`](./06-Grafana-Realtime-Monitoring/) | Real-Time Monitoring with Prometheus & Grafana (Quick Commerce) | `delivery_metrics.py`, `Dockerfile`, `Jenkinsfile`, `prometheus.yml`, `alert_rules.yml` |
+| 07  | [`07-Jenkins-CI-Automation`](./07-Jenkins-CI-Automation/)             | Introduction to CI and Jenkins Installation (Docker)            | —                                                                                       |
 
 ---
 
