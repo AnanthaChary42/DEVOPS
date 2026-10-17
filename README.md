@@ -21,6 +21,7 @@ DEVOPS/
 ├── 07-Jenkins-CI-Automation/
 ├── 08-Jenkins-Hello-World-Job/
 ├── 09-Jenkins-Multi-Stage-Pipeline/
+├── 10-Minikube-Multi-Node-Multi-App-Deployment/
 └── README.md  ← You are here
 ```
 
