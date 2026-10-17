@@ -115,8 +115,6 @@ if __name__ == "__main__":
     unittest.main()
 ```
 
-> 📸 **Screenshot:** `01_app_files.png` — `app.py`, `requirements.txt`, `test_app.py`
-
 ---
 
 ### Step 2: Create the Jenkinsfile
@@ -187,8 +185,6 @@ pipeline {
 > - **Test Application** — reruns the tests; they use Flask's `test_client()`, so they pass whether or not the background server bound a port
 > - **post** — success/failure message after all stages
 
-> 📸 **Screenshot:** `02_jenkinsfile.png` — `Jenkinsfile` content
-
 ---
 
 ## Part B: Push to GitHub
@@ -215,8 +211,6 @@ git push -u origin main
 ```
 
 > **Important:** `git branch -M main` matters on a fresh `git init`: the default branch is `master` and `git push -u origin main` fails with _src refspec main does not match any_.
-
-> 📸 **Screenshot:** `03_git_push.png` — `git push` output
 
 ---
 
@@ -249,8 +243,6 @@ exit
 >
 > If you must use pip: `pip3 install flask --break-system-packages`.
 
-> 📸 **Screenshot:** `04_install_python.png` — Python and Flask installed inside the Jenkins container
-
 ---
 
 ## Part D: Create and Run the Pipeline Job
@@ -261,7 +253,7 @@ exit
 2. Name: `Python-MultiStage-Pipeline`
 3. Select **Pipeline** → **OK**
 
-> 📸 **Screenshot:** `05_new_pipeline.png` — New Item page with Pipeline selected
+> 📸 **Screenshot:** `01_new_pipeline.png` — New Item page with Pipeline selected
 
 ---
 
@@ -280,7 +272,7 @@ In the job configuration:
 
 > **Note:** **Alternative:** choose `Pipeline script` and paste the Jenkinsfile directly. Useful for quick tests and prototyping, but the job is then not under source control.
 
-> 📸 **Screenshot:** `06_pipeline_config.png` — Pipeline → SCM configuration
+> 📸 **Screenshot:** `02_pipeline_config.png` — Pipeline → SCM configuration
 
 ---
 
@@ -288,7 +280,7 @@ In the job configuration:
 
 Click **Build Now**. The **Stage View** shows one column per stage — Build, Test, Deploy, Run Application, Test Application.
 
-> 📸 **Screenshot:** `07_stage_view.png` — Stage View with all five stages green
+> 📸 **Screenshot:** `03_stage_view.png` — Stage View with all five stages green
 
 ---
 
@@ -389,7 +381,7 @@ Finished: SUCCESS
 
 > **Important:** The key lines are `Ran 1 test ... OK` and `Pipeline completed successfully!` followed by `Finished: SUCCESS`.
 
-> 📸 **Screenshot:** `08_console_output.png` — full Console Output ending in `Finished: SUCCESS`
+> 📸 **Screenshot:** `04_console_output.png` — full Console Output ending in `Finished: SUCCESS`
 
 ---
 
@@ -435,7 +427,6 @@ docker exec -it -u root jenkins bash -c "pip3 install flask --break-system-packa
 
 Then **Build Now** again.
 
-> 📸 **Screenshot:** `09_build_fix.png` — the error, the fix, and the successful rebuild
 
 ---
 
@@ -497,43 +488,26 @@ post {
 
 Configure SMTP under **Manage Jenkins → System → E-mail Notification** (or use the Slack Notification plugin).
 
-> 📸 **Screenshot:** `10_enhancements.png` — Code Quality stage in the Stage View (optional)
 
 ---
 
 ## Deployment Evidence
 
-### Application Files
-
-![Application Files](Screenshots/01_app_files.png)
-
-### Jenkinsfile
-
-![Jenkinsfile](Screenshots/02_jenkinsfile.png)
-
-### Git Push
-
-![Git Push](Screenshots/03_git_push.png)
-
-### Install Python in Jenkins Container
-
-![Install Python](Screenshots/04_install_python.png)
-
 ### New Pipeline Item
 
-![New Pipeline](Screenshots/05_new_pipeline.png)
+![New Pipeline](Screenshots/01_new_pipeline.png)
 
 ### Pipeline Configuration
 
-![Pipeline Config](Screenshots/06_pipeline_config.png)
+![Pipeline Config](Screenshots/02_pipeline_config.png)
 
 ### Stage View
 
-![Stage View](Screenshots/07_stage_view.png)
+![Stage View](Screenshots/03_stage_view.png)
 
 ### Console Output
 
-![Console Output](Screenshots/08_console_output.png)
+![Console Output](Screenshots/04_console_output.png)
 
 ---
 
@@ -677,36 +651,25 @@ pipeline {
 }
 EOF
 
-# 📸 01_app_files.png
-# 📸 02_jenkinsfile.png
-
 # Step 3: push to GitHub
 git init && git add . && git commit -m "Initial commit with Flask app and Jenkinsfile"
 git branch -M main
 git remote add origin https://github.com/<your-username>/devops-sample-code.git
 git push -u origin main
-# 📸 03_git_push.png
 
 # Step 4: Python + Flask inside Jenkins (apt, NOT pip)
 docker exec -it -u root jenkins bash
 # apt-get update && apt-get install -y python3 python3-pip python3-venv python3-flask
 # exit
-# 📸 04_install_python.png
 
 # Steps 5-6: pipeline job
 # New Item → "Python-MultiStage-Pipeline" → Pipeline
 # Pipeline script from SCM → Git → repo URL → */main → Jenkinsfile
-# 📸 05_new_pipeline.png
-# 📸 06_pipeline_config.png
+# 📸 01_new_pipeline.png
+# 📸 02_pipeline_config.png
 
 # Steps 7-8: build and verify
 # Build Now → Stage View → Console Output
-# 📸 07_stage_view.png
-# 📸 08_console_output.png
-
-# Step 9: fix build errors if any, rebuild
-# 📸 09_build_fix.png
-
-# Step 10 (optional): Code Quality / Dockerize / notifications
-# 📸 10_enhancements.png
+# 📸 03_stage_view.png
+# 📸 04_console_output.png
 ```
