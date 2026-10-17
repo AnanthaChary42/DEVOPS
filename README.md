@@ -40,6 +40,7 @@ DEVOPS/
 | 07  | [`07-Jenkins-CI-Automation`](./07-Jenkins-CI-Automation/)             | Introduction to CI and Jenkins Installation (Docker)            | —                                                                                       |
 | 08  | [`08-Jenkins-Hello-World-Job`](./08-Jenkins-Hello-World-Job/)         | Creating a "Hello World" Jenkins Freestyle Job                  | `hello-world.sh`                                                                        |
 | 09  | [`09-Jenkins-Multi-Stage-Pipeline`](./09-Jenkins-Multi-Stage-Pipeline/) | Jenkins Multi-Stage Pipeline — Build, Test & Deploy             | `app.py`, `test_app.py`, `requirements.txt`, `Jenkinsfile`                              |
+| 10  | [`10-Minikube-Multi-Node-Multi-App-Deployment`](./10-Minikube-Multi-Node-Multi-App-Deployment/) | Multi-Node K8s Cluster with Multiple Apps & ReplicaSets         | `product_catalog.py`, `shopping_cart.py`, `Dockerfile.*`, `*_deployment.yaml`, `*_service.yaml` |
 
 ---
 

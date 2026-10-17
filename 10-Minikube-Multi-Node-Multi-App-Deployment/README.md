@@ -154,13 +154,6 @@ minikube -p devops-multinode addons enable registry
 
 ### Step 4: Product Catalog Application (AppA)
 
-Create a working directory:
-
-```bash
-mkdir ecommerce-k8s
-cd ecommerce-k8s
-```
-
 Create `product_catalog.py` — a Flask application providing an endpoint to list available products:
 
 ```python
@@ -183,7 +176,7 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
 ```
 
-> 📸 **Screenshot:** `03_product_catalog.png` — `product_catalog.py` content
+
 
 ---
 
@@ -215,7 +208,7 @@ if __name__ == "__main__":
 
 > **Note:** The cart is an in-memory list per pod, so a GET may hit a different replica than the POST did and come back empty. That is expected for this exercise — it is exactly why real services use shared state (a database or cache).
 
-> 📸 **Screenshot:** `04_shopping_cart.png` — `shopping_cart.py` content
+
 
 ---
 
@@ -245,7 +238,7 @@ RUN pip install flask
 CMD ["python", "shopping_cart.py"]
 ```
 
-> 📸 **Screenshot:** `05_dockerfiles.png` — both Dockerfiles
+
 
 ---
 
@@ -265,7 +258,7 @@ shopping-cart     latest   cdfedc6f31ff   8 seconds ago    137MB
 product-catalog   latest   2e47c49941d7   53 seconds ago   137MB
 ```
 
-> 📸 **Screenshot:** `06_docker_build.png` — both builds + `docker images`
+> 📸 **Screenshot:** `03_docker_build.png` — both builds + `docker images`
 
 ---
 
@@ -300,7 +293,7 @@ registry.k8s.io/pause                     3.10                 873ed7510279   6 
 gcr.io/k8s-minikube/storage-provisioner   v5                   6e38f40d628d   3 years ago      31.5MB
 ```
 
-> 📸 **Screenshot:** `07_image_load.png` — `image load` + verification listing
+> 📸 **Screenshot:** `04_image_load.png` — `image load` + verification listing
 
 ---
 
@@ -349,7 +342,7 @@ spec:
 > - 2 replicas across 3 nodes → each on a different node
 > - `imagePullPolicy: Never` forces the kubelet to use the locally loaded image instead of pulling from Docker Hub
 
-> 📸 **Screenshot:** `08_product_deployment_yaml.png` — the deployment YAML
+
 
 ---
 
@@ -405,7 +398,7 @@ spec:
 
 > **Note:** 3 replicas across 3 nodes → one pod per node, maximum distribution.
 
-> 📸 **Screenshot:** `09_shopping_deployment_yaml.png` — the deployment YAML
+
 
 ---
 
@@ -449,7 +442,7 @@ spec:
   type: NodePort
 ```
 
-> 📸 **Screenshot:** `10_service_yamls.png` — both service YAMLs
+
 
 ---
 
@@ -471,7 +464,7 @@ service/product-catalog-service created
 service/shopping-cart-service created
 ```
 
-> 📸 **Screenshot:** `11_apply_all.png` — all four `kubectl apply` outputs
+
 
 ---
 
@@ -499,7 +492,7 @@ shopping-cart-788c48675b-hml9r     1/1     Running   0          25s   10.244.2.5
 > - Product Catalog (2) → `m02`, `m03`
 > - Shopping Cart (3) → `devops-multinode`, `m02`, `m03`
 
-> 📸 **Screenshot:** `12_pods_wide.png` — `kubectl get pods -o wide` showing the spread
+> 📸 **Screenshot:** `05_pods_wide.png` — `kubectl get pods -o wide` showing the spread
 
 ---
 
@@ -518,7 +511,7 @@ product-catalog-service   NodePort    10.x.x.x        <none>        80:32316/TCP
 shopping-cart-service     NodePort    10.x.x.x        <none>        80:32382/TCP   Xs
 ```
 
-> 📸 **Screenshot:** `13_get_services.png` — both services
+> 📸 **Screenshot:** `06_get_services.png` — both services
 
 ---
 
@@ -567,7 +560,7 @@ curl http://127.0.0.1:35855/products
 ]
 ```
 
-> 📸 **Screenshot:** `14_product_catalog_response.png` — the product list JSON
+> 📸 **Screenshot:** `07_product_catalog_response.png` — the product list JSON
 
 ---
 
@@ -613,7 +606,7 @@ curl -X POST http://127.0.0.1:38975/cart -H "Content-Type: application/json" -d 
 
 > **Note:** A follow-up GET may return `[]` — the Service load-balances across 3 pods and the cart is per-pod memory. Repeat the GET a few times to hit the pod that holds the item.
 
-> 📸 **Screenshot:** `15_shopping_cart_response.png` — empty cart, POST, updated cart
+> 📸 **Screenshot:** `08_shopping_cart_response.png` — empty cart, POST, updated cart
 
 ---
 
@@ -627,57 +620,29 @@ curl -X POST http://127.0.0.1:38975/cart -H "Content-Type: application/json" -d 
 
 ![Registry Addon](Screenshots/02_registry_addon.png)
 
-### Product Catalog Source
-
-![Product Catalog](Screenshots/03_product_catalog.png)
-
-### Shopping Cart Source
-
-![Shopping Cart](Screenshots/04_shopping_cart.png)
-
-### Dockerfiles
-
-![Dockerfiles](Screenshots/05_dockerfiles.png)
-
 ### Docker Build
 
-![Docker Build](Screenshots/06_docker_build.png)
+![Docker Build](Screenshots/03_docker_build.png)
 
 ### Image Load
 
-![Image Load](Screenshots/07_image_load.png)
-
-### Product Catalog Deployment YAML
-
-![Product Deployment](Screenshots/08_product_deployment_yaml.png)
-
-### Shopping Cart Deployment YAML
-
-![Shopping Deployment](Screenshots/09_shopping_deployment_yaml.png)
-
-### Service YAMLs
-
-![Service YAMLs](Screenshots/10_service_yamls.png)
-
-### Apply All Manifests
-
-![Apply All](Screenshots/11_apply_all.png)
+![Image Load](Screenshots/04_image_load.png)
 
 ### Pod Distribution
 
-![Pods Wide](Screenshots/12_pods_wide.png)
+![Pods Wide](Screenshots/05_pods_wide.png)
 
 ### Services
 
-![Get Services](Screenshots/13_get_services.png)
+![Get Services](Screenshots/06_get_services.png)
 
 ### Product Catalog Response
 
-![Product Response](Screenshots/14_product_catalog_response.png)
+![Product Response](Screenshots/07_product_catalog_response.png)
 
 ### Shopping Cart Response
 
-![Shopping Cart Response](Screenshots/15_shopping_cart_response.png)
+![Shopping Cart Response](Screenshots/08_shopping_cart_response.png)
 
 ---
 
@@ -780,50 +745,40 @@ minikube -p devops-multinode addons enable registry
 # 📸 02_registry_addon.png
 
 # Step 4-5: app sources
-mkdir ecommerce-k8s && cd ecommerce-k8s
 # create product_catalog.py, shopping_cart.py
-# 📸 03_product_catalog.png
-# 📸 04_shopping_cart.png
 
 # Step 6-7: Dockerfiles + build
 docker build -t product-catalog:latest -f Dockerfile.product .
 docker build -t shopping-cart:latest -f Dockerfile.shopping .
 docker images
-# 📸 05_dockerfiles.png
-# 📸 06_docker_build.png
+# 📸 03_docker_build.png
 
 # Step 8: load images onto all nodes
 minikube -p devops-multinode image load product-catalog:latest
 minikube -p devops-multinode image load shopping-cart:latest
 minikube -p devops-multinode ssh -- docker images
-# 📸 07_image_load.png
+# 📸 04_image_load.png
 
-# Step 9-11: manifests (all namespace: default)
-# 📸 08_product_deployment_yaml.png
-# 📸 09_shopping_deployment_yaml.png
-# 📸 10_service_yamls.png
-
-# Step 12: apply
+# Step 9-12: deploy manifests (all namespace: default)
 kubectl apply -f product_catalog_deployment.yaml
 kubectl apply -f shopping_cart_deployment.yaml
 kubectl apply -f product_catalog_service.yaml
 kubectl apply -f shopping_cart_service.yaml
-# 📸 11_apply_all.png
 
 # Step 13-14: verify
 kubectl get pods -o wide
 kubectl get services
-# 📸 12_pods_wide.png
-# 📸 13_get_services.png
+# 📸 05_pods_wide.png
+# 📸 06_get_services.png
 
 # Step 15: product catalog
 minikube -p devops-multinode service product-catalog-service
 curl http://127.0.0.1:<tunnel-port>/products
-# 📸 14_product_catalog_response.png
+# 📸 07_product_catalog_response.png
 
 # Step 16: shopping cart
 minikube -p devops-multinode service shopping-cart-service
 curl http://127.0.0.1:<tunnel-port>/cart
 curl -X POST http://127.0.0.1:<tunnel-port>/cart -H "Content-Type: application/json" -d '{"id": 1, "name": "Laptop", "quantity": 1}'
-# 📸 15_shopping_cart_response.png
+# 📸 08_shopping_cart_response.png
 ```
