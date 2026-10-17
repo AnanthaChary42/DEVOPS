@@ -19,6 +19,7 @@ DEVOPS/
 ├── 05-Docker-Security-AppArmor/
 ├── 06-Grafana-Realtime-Monitoring/
 ├── 07-Jenkins-CI-Automation/
+├── 08-Jenkins-Hello-World-Job/
 └── README.md  ← You are here
 ```
 
@@ -36,6 +37,7 @@ DEVOPS/
 | 05  | [`05-Docker-Security-AppArmor`](./05-Docker-Security-AppArmor/)       | Docker Security with AppArmor and Python                        | `app.py`, `Dockerfile`, `apply_apparmor.py`, `test_restricted_actions.py`               |
 | 06  | [`06-Grafana-Realtime-Monitoring`](./06-Grafana-Realtime-Monitoring/) | Real-Time Monitoring with Prometheus & Grafana (Quick Commerce) | `delivery_metrics.py`, `Dockerfile`, `Jenkinsfile`, `prometheus.yml`, `alert_rules.yml` |
 | 07  | [`07-Jenkins-CI-Automation`](./07-Jenkins-CI-Automation/)             | Introduction to CI and Jenkins Installation (Docker)            | —                                                                                       |
+| 08  | [`08-Jenkins-Hello-World-Job`](./08-Jenkins-Hello-World-Job/)         | Creating a "Hello World" Jenkins Freestyle Job                  | `hello-world.sh`                                                                        |
 
 ---
 
